@@ -1,12 +1,8 @@
 const path = require('path');
 
 module.exports = {
-	entry: './src/index.js',
+	entry: './src/index.ts',
 	mode: 'development',
-	output: {
-		filename: 'main.js',
-		path: path.resolve(__dirname, 'dist'),
-	},
 	devServer: {
 		static: './dist',
 	},
@@ -16,6 +12,18 @@ module.exports = {
 				test: /\.s[ac]ss$/i,
 				use: ['style-loader', 'css-loader', 'sass-loader'],
 			},
+			{
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/,
+			},
 		],
+	},
+	resolve: {
+		extensions: ['.tsx', '.ts', '.js'],
+	},
+	output: {
+		filename: 'main.js',
+		path: path.resolve(__dirname, 'dist'),
 	},
 };
