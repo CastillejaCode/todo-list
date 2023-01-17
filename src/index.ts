@@ -1,7 +1,7 @@
 function projects(name: string) {
 	const getName = () => name;
 
-	let list: object[] = [];
+	let list: any[] = [{ title: 'pizza' }];
 	const getList = () => list;
 
 	function createObjects(
@@ -39,7 +39,10 @@ function projects(name: string) {
 	}
 
 	function removeTodoFromList(todo: string) {
-		list.splice(list.findIndex((e: Todo) => e.title === todo));
+		let index = list.findIndex((e: Todo) => e.title === todo);
+		console.log(todo);
+		console.log(index);
+		list.splice(index, 1);
 	}
 
 	return {
@@ -58,7 +61,6 @@ defaultList.addTodoToList(
 	'urgent'
 );
 console.log(defaultList.getList());
-defaultList.removeTodoFromList('Eat Paint');
 
 // import createObjects from './modules/objects';
 
