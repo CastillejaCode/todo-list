@@ -1,4 +1,5 @@
 import './style.scss';
+import format from 'date-fns/format';
 
 const buttonNew = document.querySelector('.add-new');
 const buttonSumbit = document.querySelector('.submit-todo');
@@ -6,6 +7,7 @@ const buttonExit = document.querySelector('.exit-modal');
 const taskContainer = document.querySelector('.task-container');
 const modal = document.querySelector('.modal');
 const modalOverlay = document.querySelector('.modal-overlay');
+const title = document.querySelector('.title') as HTMLInputElement;
 
 interface Todo {
 	title: string;
@@ -17,7 +19,7 @@ interface Todo {
 function projects(name: string) {
 	const getName = () => name;
 
-	let list: any[] = [{ title: 'pizza' }];
+	let list: any[] = [];
 	const getList = () => list;
 
 	function addToList(object: object) {
@@ -53,6 +55,10 @@ function projects(name: string) {
 }
 
 const domHandler = (() => {
+	function clearList() {
+		taskContainer?.replaceChildren();
+	}
+
 	function updateList() {
 		defaultList.getList().forEach((e: Todo) =>
 			taskContainer?.insertAdjacentHTML(
@@ -70,15 +76,18 @@ const domHandler = (() => {
 
 	return {
 		updateList,
+		clearList,
 	};
 })();
 
+// Clicking on add brings up modal form
 buttonNew?.addEventListener('click', () => {
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 	// domHandler.updateList();
 });
 
+// Exit button on modal form
 buttonExit?.addEventListener('click', () => {
 	console.log(1234);
 	modal?.classList.toggle('closed');
@@ -86,13 +95,23 @@ buttonExit?.addEventListener('click', () => {
 });
 
 let defaultList = projects('default');
-defaultList.addTodoToList(
-	'Eat Paint',
-	'Look at the paint',
-	new Date(),
-	'urgent'
-);
-console.log(defaultList.getList());
+// defaultList.addTodoToList(
+// 	'Eat Paint',
+// 	'Look at the paint',
+// 	new Date(),
+// 	'urgent'
+// );
+// console.log(defaultList.getList());
+
+buttonSumbit?.addEventListener('click', (e) => {
+	// e.preventDefault();
+	// console.log(124);
+	defaultList.addTodoToList(title.value, 'pizza', new Date(), 'urgent');
+	domHandler.clearList();
+	domHandler.updateList();
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
 
 // import createObjects from './modules/objects';
 
