@@ -351,3 +351,30 @@ template {
 [hidden] {
 	display: none;
 }
+
+// Non-Default settings
+
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.task-bar {
+	font-size: 1.5rem;
+	margin-bottom: 1rem;
+}
+
+.task-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-width: 16rem;
+	border: 1px soild red;
+
+	.task-card {
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+	}
+}

@@ -1,22 +1,20 @@
+import './style.scss';
+
+const buttonNew = document.querySelector('.add-new');
+const taskContainer = document.querySelector('.task-container');
+
+interface Todo {
+	title: string;
+	description: string;
+	date: Date;
+	priority: 'urgent' | 'later';
+}
+
 function projects(name: string) {
 	const getName = () => name;
 
 	let list: any[] = [{ title: 'pizza' }];
 	const getList = () => list;
-
-	function createObjects(
-		title: string,
-		description: string,
-		date: Date,
-		priority: 'urgent' | 'later'
-	) {
-		return {
-			title,
-			description,
-			date,
-			priority,
-		};
-	}
 
 	function addToList(object: object) {
 		list.push(object);
@@ -28,20 +26,17 @@ function projects(name: string) {
 		date: Date,
 		priority: 'urgent' | 'later'
 	) {
-		addToList(createObjects(title, description, date, priority));
-	}
-
-	interface Todo {
-		title: string;
-		description: string;
-		date: Date;
-		priority: 'urgent' | 'later';
+		addToList({
+			title,
+			description,
+			date,
+			priority,
+		});
 	}
 
 	function removeTodoFromList(todo: string) {
 		let index = list.findIndex((e: Todo) => e.title === todo);
-		console.log(todo);
-		console.log(index);
+
 		list.splice(index, 1);
 	}
 
@@ -52,6 +47,31 @@ function projects(name: string) {
 		removeTodoFromList,
 	};
 }
+
+const domHandler = (() => {
+	function updateList() {
+		defaultList.getList().forEach((e: Todo) =>
+			buttonNew?.insertAdjacentHTML(
+				'beforebegin',
+				`
+	<div class="task-card">
+	<input type="checkbox" />
+	<h2>${e.title}</h2>
+	<h3>${e.date}</h3>
+</div>
+	`
+			)
+		);
+	}
+
+	return {
+		updateList,
+	};
+})();
+
+buttonNew?.addEventListener('click', () => {
+	domHandler.updateList();
+});
 
 let defaultList = projects('default');
 defaultList.addTodoToList(
