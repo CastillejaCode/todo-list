@@ -1,7 +1,11 @@
 import './style.scss';
 
 const buttonNew = document.querySelector('.add-new');
+const buttonSumbit = document.querySelector('.submit-todo');
+const buttonExit = document.querySelector('.exit-modal');
 const taskContainer = document.querySelector('.task-container');
+const modal = document.querySelector('.modal');
+const modalOverlay = document.querySelector('.modal-overlay');
 
 interface Todo {
 	title: string;
@@ -51,8 +55,8 @@ function projects(name: string) {
 const domHandler = (() => {
 	function updateList() {
 		defaultList.getList().forEach((e: Todo) =>
-			buttonNew?.insertAdjacentHTML(
-				'beforebegin',
+			taskContainer?.insertAdjacentHTML(
+				'beforeend',
 				`
 	<div class="task-card">
 	<input type="checkbox" />
@@ -70,7 +74,15 @@ const domHandler = (() => {
 })();
 
 buttonNew?.addEventListener('click', () => {
-	domHandler.updateList();
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+	// domHandler.updateList();
+});
+
+buttonExit?.addEventListener('click', () => {
+	console.log(1234);
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
 });
 
 let defaultList = projects('default');
