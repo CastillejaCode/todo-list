@@ -14,16 +14,28 @@
 		</div>
 		<div class="task-container">
 			<div class="task-card">
-				<input type="checkbox" />
-				<h2>Pet a cat</h2>
-				<h3>01/24/23</h3>
+				<div class="info-container">
+					<input type="checkbox" />
+					<h2>Pet a cat</h2>
+					<h3>01/24/23</h3>
+				</div>
+				<div class="expanded-container">
+					<p>
+						Look at the cat and then pat the cat. He needs the pets. I like
+						cats.
+					</p>
+					<h2>Urgent!</h2>
+				</div>
 			</div>
 		</div>
 		<button class="add-new">+</button>
 		<div class="modal closed">
 			<button class="exit-modal">X</button>
 			<form action="" class="modal-form">
-				<input class="title" type="text" />
+				<div class="title-container">
+					<label for="title">Title</label>
+					<input class="title" id="title" type="text" required />
+				</div>
 				<input class="description" type="text" />
 				<input class="date" type="date" />
 				<input class="priority" type="text" />

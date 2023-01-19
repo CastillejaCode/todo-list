@@ -8,6 +8,8 @@ const taskContainer = document.querySelector('.task-container');
 const modal = document.querySelector('.modal');
 const modalOverlay = document.querySelector('.modal-overlay');
 const title = document.querySelector('.title') as HTMLInputElement;
+const date = document.querySelector('.date') as HTMLInputElement;
+const taskCard = document.querySelectorAll('.task-card');
 
 interface Todo {
 	title: string;
@@ -29,7 +31,7 @@ function projects(name: string) {
 	function addTodoToList(
 		title: string,
 		description: string,
-		date: Date,
+		date: Date | null,
 		priority: 'urgent' | 'later'
 	) {
 		addToList({
@@ -67,16 +69,20 @@ const domHandler = (() => {
 	<div class="task-card">
 	<input type="checkbox" />
 	<h2>${e.title}</h2>
-	<h3>${e.date}</h3>
+	<h3>${format(e.date, 'MMM do')}</h3>
 </div>
 	`
 			)
 		);
 	}
 
+	const clearUpdateList = () => {
+		clearList();
+		updateList();
+	};
+
 	return {
-		updateList,
-		clearList,
+		clearUpdateList,
 	};
 })();
 
@@ -95,23 +101,37 @@ buttonExit?.addEventListener('click', () => {
 });
 
 let defaultList = projects('default');
-// defaultList.addTodoToList(
-// 	'Eat Paint',
-// 	'Look at the paint',
-// 	new Date(),
-// 	'urgent'
-// );
-// console.log(defaultList.getList());
+defaultList.addTodoToList(
+	'Eat Paint',
+	'Look at the paint',
+	new Date(),
+	'urgent'
+);
+// domHandler.clearUpdateList();
 
-buttonSumbit?.addEventListener('click', (e) => {
-	// e.preventDefault();
-	// console.log(124);
-	defaultList.addTodoToList(title.value, 'pizza', new Date(), 'urgent');
-	domHandler.clearList();
-	domHandler.updateList();
+buttonSumbit?.addEventListener('click', () => {
+	// Add to project list
+	defaultList.addTodoToList(title.value, 'pizza', date.valueAsDate, 'urgent');
+	domHandler.clearUpdateList();
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
+
+taskContainer?.addEventListener('click', (e: any) => {
+	// console.log(e.target.closest('.task-card'));
+	// console.log(e.target.classList.value.includes('info-container'));
+	if (e.target.closest('.task-card')) {
+		console.log(123);
+		e.target.closest('.task-card').classList.toggle('expand');
+	}
+});
+
+// taskCard.forEach((e) =>
+// 	e.addEventListener('click', () => {
+// 		console.log(124);
+// 		e.classList.toggle('expand');
+// 	})
+// );
 
 // import createObjects from './modules/objects';
 
