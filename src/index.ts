@@ -8,8 +8,11 @@ const taskContainer = document.querySelector('.task-container');
 const modal = document.querySelector('.modal');
 const modalOverlay = document.querySelector('.modal-overlay');
 const title = document.querySelector('.title') as HTMLInputElement;
+const description = document.querySelector('.description') as HTMLInputElement;
 const date = document.querySelector('.date') as HTMLInputElement;
+const priority = document.querySelector('.priority') as HTMLSelectElement;
 const taskCard = document.querySelectorAll('.task-card');
+const buttonEdit = document.querySelectorAll('.edit');
 
 interface Todo {
 	title: string;
@@ -32,7 +35,7 @@ function projects(name: string) {
 		title: string,
 		description: string,
 		date: Date | null,
-		priority: 'urgent' | 'later'
+		priority: string
 	) {
 		addToList({
 			title,
@@ -66,11 +69,19 @@ const domHandler = (() => {
 			taskContainer?.insertAdjacentHTML(
 				'beforeend',
 				`
-	<div class="task-card">
-	<input type="checkbox" />
-	<h2>${e.title}</h2>
-	<h3>${format(e.date, 'MMM do')}</h3>
-</div>
+				<div class="task-card">
+				<div class="info-container">
+					<input type="checkbox" />
+					<h2>${e.title}</h2>
+					<h3>${format(e.date, 'MMM do')}</h3>
+				</div>
+				<div class="expanded-container">
+					<p>
+						${e.description}
+					</p>
+					<h2>${e.priority}</h2>
+				</div>
+			</div>
 	`
 			)
 		);
@@ -111,7 +122,12 @@ defaultList.addTodoToList(
 
 buttonSumbit?.addEventListener('click', () => {
 	// Add to project list
-	defaultList.addTodoToList(title.value, 'pizza', date.valueAsDate, 'urgent');
+	defaultList.addTodoToList(
+		title.value,
+		description.value,
+		date.valueAsDate,
+		priority.value
+	);
 	domHandler.clearUpdateList();
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -120,9 +136,20 @@ buttonSumbit?.addEventListener('click', () => {
 taskContainer?.addEventListener('click', (e: any) => {
 	// console.log(e.target.closest('.task-card'));
 	// console.log(e.target.classList.value.includes('info-container'));
-	if (e.target.closest('.task-card')) {
+	if (
+		e.target.closest('.task-card') &&
+		e.target.classList.value !== 'edit' &&
+		e.target.classList.value !== 'checkbox'
+	) {
 		console.log(123);
 		e.target.closest('.task-card').classList.toggle('expand');
+	}
+});
+
+taskContainer?.addEventListener('click', (e: any) => {
+	if (e.target.classList.value === 'edit') {
+		e.target.closest('.task-card').classList.toggle('edit-expand');
+		e.target.closest('.task-card').classList.add('expand');
 	}
 });
 

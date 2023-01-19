@@ -15,16 +15,18 @@
 		<div class="task-container">
 			<div class="task-card">
 				<div class="info-container">
-					<input type="checkbox" />
+					<input class="checkbox" type="checkbox" />
 					<h2>Pet a cat</h2>
 					<h3>01/24/23</h3>
 				</div>
 				<div class="expanded-container">
+					<button class="edit">edit</button>
 					<p>
 						Look at the cat and then pat the cat. He needs the pets. I like
 						cats.
 					</p>
 					<h2>Urgent!</h2>
+					<button>X</button>
 				</div>
 			</div>
 		</div>
@@ -38,7 +40,11 @@
 				</div>
 				<input class="description" type="text" />
 				<input class="date" type="date" />
-				<input class="priority" type="text" />
+				<select name="priority" class="priority">
+					<option value="Urgent">Urgent</option>
+					<option value="Soon">Soon</option>
+					<option value="Chillin'">Chillin'</option>
+				</select>
 			</form>
 			<button type="submit" form="modal-form" class="submit-todo">
 				Submit

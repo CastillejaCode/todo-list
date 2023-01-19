@@ -399,16 +399,26 @@ body {
 	max-height: 10rem;
 }
 
-.info-container {
-	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
-	gap: 1rem;
+.edit-expand {
+	max-height: 18rem;
+}
+
+.info-container,
+.expanded-container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	text-align: center;
+	// justify-content: center;
+	align-items: center;
 	cursor: pointer;
 }
 
 .expanded-container {
-	display: flex;
+	button {
+		margin: auto;
+		width: fit-content;
+	}
+	// gap: 2rem;
 }
 
 .add-new {
