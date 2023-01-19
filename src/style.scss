@@ -364,6 +364,7 @@ body {
 }
 
 .task-bar {
+	display: flex;
 	font-size: 1.5rem;
 	margin-bottom: 1rem;
 }
@@ -390,7 +391,7 @@ body {
 	flex-direction: column;
 	overflow: hidden;
 
-	max-height: 4rem;
+	// max-height: 4rem;
 
 	transition: 0.3s;
 }
