@@ -1,6 +1,7 @@
 import './style.scss';
 import format from 'date-fns/format';
 
+const taskBar = document.querySelector('.task-bar') as HTMLElement;
 const buttonNew = document.querySelector('.add-new');
 const buttonSumbit = document.querySelector('.submit-todo');
 const buttonExit = document.querySelector('.exit-modal');
@@ -28,14 +29,14 @@ const mainList = (function () {
 	};
 })();
 
-const lists = function (nameList: string) {
-	interface Todo {
-		title: string;
-		description: string;
-		date: Date;
-		priority: string;
-	}
+interface Todo {
+	title: string;
+	description: string;
+	date: Date;
+	priority: string;
+}
 
+const lists = function (nameList: string) {
 	const list: object[] = [];
 
 	let name = nameList;
@@ -53,8 +54,59 @@ const lists = function (nameList: string) {
 };
 
 const domHandler = (function () {
-	task;
+	const taskBarClear = () => {
+		taskBar?.replaceChildren();
+	};
+
+	const taskBarUpdate = () => {
+		taskBarClear();
+		let i = 0;
+		mainList.list.forEach((e) => {
+			taskBar?.insertAdjacentHTML(
+				'beforeend',
+				`
+				<div class="task-bar-list" data-index = ${i}>${e.name}</div>
+				`
+			),
+				i++;
+		});
+	};
+
+	const taskCardsClear = () => {
+		taskContainer?.replaceChildren();
+	};
+
+	const taskCardsUpdate = (index: number) => {
+		taskCardsClear();
+		mainList.list.at(index).list.forEach((e: Todo) => {
+			taskContainer?.insertAdjacentHTML(
+				'beforeend',
+				`
+				<div class="task-card">
+				<h1>${e.title}</h1>
+				<h1>${e.description}</h1>
+				<h1>${e.date}</h1>
+				<h1>${e.priority}</h1>
+				</div>
+				`
+			);
+		});
+	};
+
+	return {
+		taskBarUpdate,
+		taskCardsUpdate,
+	};
 })();
+mainList.addList('default');
+mainList.addList('pizza');
+
+mainList.list.at(1)?.addTodo({
+	title: 'Eat Pizza',
+	description: 'Pet the cat a lot',
+	date: new Date(),
+	priority: 'urgent',
+});
 
 mainList.list.at(0)?.addTodo({
 	title: 'Pet Cat',
@@ -63,7 +115,17 @@ mainList.list.at(0)?.addTodo({
 	priority: 'urgent',
 });
 
-console.log(mainList.list[0]);
+taskBar?.addEventListener('click', (e: any) => {
+	let index = e.target?.dataset.index;
+	domHandler.taskCardsUpdate(index);
+});
+
+domHandler.taskBarUpdate();
+
+buttonNewList?.addEventListener('click', () => {
+	mainList.addList('pizza');
+	domHandler.taskBarUpdate();
+});
 
 interface TodoStructure {
 	title: string;
