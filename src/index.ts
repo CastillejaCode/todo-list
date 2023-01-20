@@ -19,7 +19,7 @@ const formPriority = document.querySelector(
 	'.form-priority'
 ) as HTMLSelectElement;
 const taskCard = document.querySelectorAll('.task-card');
-const buttonEdit = document.querySelectorAll('.edit');
+const buttonEdit = document.querySelectorAll('.edit-todo');
 const buttonNewList = document.querySelector('.new-list');
 
 const mainList = (function () {
@@ -44,7 +44,7 @@ interface Todo {
 }
 
 const lists = function (nameList: string) {
-	const list: object[] = [];
+	const list: Todo[] = [];
 
 	let name = nameList;
 
@@ -52,11 +52,16 @@ const lists = function (nameList: string) {
 
 	const removeTodo = (index: number) => list.splice(index, 1);
 
+	// const editTodo = (e: Todo) => {
+	// 	title = e.title;
+	// };
+
 	return {
 		list,
 		name,
 		addTodo,
 		removeTodo,
+		// editTodo,
 	};
 };
 
@@ -94,8 +99,9 @@ const domHandler = (function () {
 				<h1>${e.title}</h1>
 				<h1>${e.description}</h1>
 				<h1>${format(e.date, 'MMM do')}</h1>
-				<h1>${e.priority}</h1>
+				<h1 contentEditable="true">${e.priority}</h1>
 				<button class="delete-todo">Delete</button>
+				<button class="edit-todo">Edit</button>
 				</div>
 				`
 			);
@@ -113,6 +119,8 @@ mainList.addList('default');
 mainList.addList('pizza');
 
 let listIndex: number;
+let editToggle: boolean;
+let editIndex: number;
 
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
@@ -121,6 +129,7 @@ taskBar?.addEventListener('click', (e: any) => {
 });
 
 // Open Modal
+// TODO: create module
 buttonNew?.addEventListener('click', () => {
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -135,14 +144,26 @@ buttonExit?.addEventListener('click', () => {
 // Submit
 // TODO: allow it to be entered with enter
 // TODO: make it more enmeshed with form
+// TODO: wipe out on new addition
+// BUG:  editing only works on the first task
 buttonSumbit?.addEventListener('click', () => {
-	mainList.list.at(listIndex).addTodo({
-		title: formTitle.value,
-		description: formDescription.value,
-		date: formDate.valueAsDate,
-		priority: formPriority.value,
-	});
+	let todo = mainList.list.at(listIndex).list.at(editIndex);
+	if (editToggle) {
+		todo.title = formTitle.value;
+		todo.description = formDescription.value;
+		todo.date = formDate.valueAsDate;
+		todo.priority = formPriority.value;
+	} else {
+		mainList.list.at(listIndex).addTodo({
+			title: formTitle.value,
+			description: formDescription.value,
+			date: formDate.valueAsDate,
+			priority: formPriority.value,
+		});
+	}
+	editToggle = false;
 
+	console.log(mainList.list.at(listIndex).list.at(editIndex).title);
 	domHandler.taskCardsUpdate(listIndex);
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -181,6 +202,16 @@ domHandler.taskCardsUpdate(0);
 buttonNewList?.addEventListener('click', () => {
 	mainList.addList('pizza');
 	domHandler.taskBarUpdate();
+});
+
+// Edit Button
+taskContainer?.addEventListener('click', (e: any) => {
+	if (e.target.classList.value.includes('edit-todo')) {
+		editIndex = e.target.dataset.index;
+		editToggle = true;
+		modal?.classList.toggle('closed');
+		modalOverlay?.classList.toggle('closed');
+	}
 });
 
 // Delete current Todo
