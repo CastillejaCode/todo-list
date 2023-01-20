@@ -93,7 +93,7 @@ const domHandler = (function () {
 				<div class="task-card" data-index=${i}>
 				<h1>${e.title}</h1>
 				<h1>${e.description}</h1>
-				<h1>${e.date}</h1>
+				<h1>${format(e.date, 'MMM do')}</h1>
 				<h1>${e.priority}</h1>
 				<button class="delete-todo">Delete</button>
 				</div>
@@ -117,9 +117,6 @@ let listIndex: number;
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
 	listIndex = e.target?.dataset.index;
-	console.log(listIndex);
-	console.log(mainList.list.at(0).list);
-	console.log(mainList.list.at(1).list);
 	domHandler.taskCardsUpdate(listIndex);
 });
 
@@ -129,11 +126,15 @@ buttonNew?.addEventListener('click', () => {
 	modalOverlay?.classList.toggle('closed');
 });
 
+// Exit Modal
 buttonExit?.addEventListener('click', () => {
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
 
+// Submit
+// TODO: allow it to be entered with enter
+// TODO: make it more enmeshed with form
 buttonSumbit?.addEventListener('click', () => {
 	mainList.list.at(listIndex).addTodo({
 		title: formTitle.value,
@@ -141,8 +142,7 @@ buttonSumbit?.addEventListener('click', () => {
 		date: formDate.valueAsDate,
 		priority: formPriority.value,
 	});
-	console.log(listIndex);
-	console.log(mainList.list.at(listIndex));
+
 	domHandler.taskCardsUpdate(listIndex);
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -181,6 +181,14 @@ domHandler.taskCardsUpdate(0);
 buttonNewList?.addEventListener('click', () => {
 	mainList.addList('pizza');
 	domHandler.taskBarUpdate();
+});
+
+// Delete current Todo
+taskContainer?.addEventListener('click', (e: any) => {
+	if (e.target.classList.value.includes('delete-todo')) {
+		e.target.closest('.task-card').remove();
+		mainList.list.at(listIndex).removeTodo(e.target.dataset.index);
+	}
 });
 
 // interface TodoStructure {
