@@ -112,7 +112,16 @@ const domHandler = (function () {
 mainList.addList('default');
 mainList.addList('pizza');
 
-let listIndex: number = 0;
+let listIndex: number;
+
+// Switch b/t lists
+taskBar?.addEventListener('click', (e: any) => {
+	listIndex = e.target?.dataset.index;
+	console.log(listIndex);
+	console.log(mainList.list.at(0).list);
+	console.log(mainList.list.at(1).list);
+	domHandler.taskCardsUpdate(listIndex);
+});
 
 // Open Modal
 buttonNew?.addEventListener('click', () => {
@@ -126,14 +135,14 @@ buttonExit?.addEventListener('click', () => {
 });
 
 buttonSumbit?.addEventListener('click', () => {
-	mainList.list
-		.at(listIndex)
-		.addTodo({
-			title: formTitle.value,
-			description: formDescription.value,
-			date: formDate.valueAsDate,
-			priority: formPriority.value,
-		});
+	mainList.list.at(listIndex).addTodo({
+		title: formTitle.value,
+		description: formDescription.value,
+		date: formDate.valueAsDate,
+		priority: formPriority.value,
+	});
+	console.log(listIndex);
+	console.log(mainList.list.at(listIndex));
 	domHandler.taskCardsUpdate(listIndex);
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -166,12 +175,6 @@ mainList.list.at(0)?.addTodo({
 // Show all lists and default todos
 domHandler.taskBarUpdate();
 domHandler.taskCardsUpdate(0);
-
-// Switch b/t lists
-taskBar?.addEventListener('click', (e: any) => {
-	let listIndex = e.target?.dataset.index;
-	domHandler.taskCardsUpdate(listIndex);
-});
 
 // Create new list
 // TODO create new list based on input name
