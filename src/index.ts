@@ -2,16 +2,22 @@ import './style.scss';
 import format from 'date-fns/format';
 
 const taskBar = document.querySelector('.task-bar') as HTMLElement;
+const taskBarList = document.querySelectorAll('.task-bar-list');
 const buttonNew = document.querySelector('.add-new');
 const buttonSumbit = document.querySelector('.submit-todo');
 const buttonExit = document.querySelector('.exit-modal');
+const buttonDeleteTodo = document.querySelector('.delete-todo');
 const taskContainer = document.querySelector('.task-container');
 const modal = document.querySelector('.modal');
 const modalOverlay = document.querySelector('.modal-overlay');
-const title = document.querySelector('.title') as HTMLInputElement;
-const description = document.querySelector('.description') as HTMLInputElement;
-const date = document.querySelector('.date') as HTMLInputElement;
-const priority = document.querySelector('.priority') as HTMLSelectElement;
+const formTitle = document.querySelector('.form-title') as HTMLInputElement;
+const formDescription = document.querySelector(
+	'.form-description'
+) as HTMLInputElement;
+const formDate = document.querySelector('.form-date') as HTMLInputElement;
+const formPriority = document.querySelector(
+	'.form-priority'
+) as HTMLSelectElement;
 const taskCard = document.querySelectorAll('.task-card');
 const buttonEdit = document.querySelectorAll('.edit');
 const buttonNewList = document.querySelector('.new-list');
@@ -34,6 +40,7 @@ interface Todo {
 	description: string;
 	date: Date;
 	priority: string;
+	listIndex: number;
 }
 
 const lists = function (nameList: string) {
@@ -54,12 +61,12 @@ const lists = function (nameList: string) {
 };
 
 const domHandler = (function () {
-	const taskBarClear = () => {
+	const clearTaskBar = () => {
 		taskBar?.replaceChildren();
 	};
 
-	const taskBarUpdate = () => {
-		taskBarClear();
+	const updateTaskBar = () => {
+		clearTaskBar();
 		let i = 0;
 		mainList.list.forEach((e) => {
 			taskBar?.insertAdjacentHTML(
@@ -72,34 +79,75 @@ const domHandler = (function () {
 		});
 	};
 
-	const taskCardsClear = () => {
+	const clearTaskCards = () => {
 		taskContainer?.replaceChildren();
 	};
 
-	const taskCardsUpdate = (index: number) => {
-		taskCardsClear();
+	const updateTaskCards = (index: number) => {
+		clearTaskCards();
+		let i = 0;
 		mainList.list.at(index).list.forEach((e: Todo) => {
 			taskContainer?.insertAdjacentHTML(
 				'beforeend',
 				`
-				<div class="task-card">
+				<div class="task-card" data-index=${i}>
 				<h1>${e.title}</h1>
 				<h1>${e.description}</h1>
 				<h1>${e.date}</h1>
 				<h1>${e.priority}</h1>
+				<button class="delete-todo">Delete</button>
 				</div>
 				`
 			);
+			i++;
 		});
 	};
 
 	return {
-		taskBarUpdate,
-		taskCardsUpdate,
+		taskBarUpdate: updateTaskBar,
+		taskCardsUpdate: updateTaskCards,
 	};
 })();
+
 mainList.addList('default');
 mainList.addList('pizza');
+
+let listIndex: number = 0;
+
+// Open Modal
+buttonNew?.addEventListener('click', () => {
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+buttonExit?.addEventListener('click', () => {
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+buttonSumbit?.addEventListener('click', () => {
+	mainList.list
+		.at(listIndex)
+		.addTodo({
+			title: formTitle.value,
+			description: formDescription.value,
+			date: formDate.valueAsDate,
+			priority: formPriority.value,
+		});
+	domHandler.taskCardsUpdate(listIndex);
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+// Select list and current list index
+taskBar?.addEventListener('click', (e: any) => {
+	if (e.target.classList.value.includes('task-bar-list')) {
+		document
+			.querySelectorAll('.task-bar-list')
+			.forEach((element) => element.classList.remove('selected'));
+		e.target.classList.toggle('selected');
+	}
+});
 
 mainList.list.at(1)?.addTodo({
 	title: 'Eat Pizza',
@@ -115,26 +163,31 @@ mainList.list.at(0)?.addTodo({
 	priority: 'urgent',
 });
 
+// Show all lists and default todos
+domHandler.taskBarUpdate();
+domHandler.taskCardsUpdate(0);
+
+// Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
-	let index = e.target?.dataset.index;
-	domHandler.taskCardsUpdate(index);
+	let listIndex = e.target?.dataset.index;
+	domHandler.taskCardsUpdate(listIndex);
 });
 
-domHandler.taskBarUpdate();
-
+// Create new list
+// TODO create new list based on input name
 buttonNewList?.addEventListener('click', () => {
 	mainList.addList('pizza');
 	domHandler.taskBarUpdate();
 });
 
-interface TodoStructure {
-	title: string;
-	description: string;
-	date: Date;
-	priority: 'Urgent' | 'Soon' | 'Later';
-	list: object[];
-	// name: string;
-}
+// interface TodoStructure {
+// 	title: string;
+// 	description: string;
+// 	date: Date;
+// 	priority: 'Urgent' | 'Soon' | 'Later';
+// 	list: object[];
+// 	// name: string;
+// }
 
 // class Todo extends List {
 // 	constructor() {
