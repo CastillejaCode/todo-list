@@ -96,12 +96,12 @@ const domHandler = (function () {
 				'beforeend',
 				`
 				<div class="task-card" data-index=${i}>
-				<h1>${e.title}</h1>
-				<h1>${e.description}</h1>
-				<h1>${format(e.date, 'MMM do')}</h1>
-				<h1 contentEditable="true">${e.priority}</h1>
-				<button class="delete-todo">Delete</button>
-				<button class="edit-todo">Edit</button>
+					<h1>${e.title}</h1>
+					<h1>${e.description}</h1>
+					<h1>${format(e.date, 'MMM do')}</h1>
+					<h1 contentEditable="true">${e.priority}</h1>
+					<button class="delete-todo">Delete</button>
+					<button class="edit-todo">Edit</button>
 				</div>
 				`
 			);
@@ -148,6 +148,7 @@ buttonExit?.addEventListener('click', () => {
 // BUG:  editing only works on the first task
 buttonSumbit?.addEventListener('click', () => {
 	let todo = mainList.list.at(listIndex).list.at(editIndex);
+	// Submit button edits the current todo
 	if (editToggle) {
 		todo.title = formTitle.value;
 		todo.description = formDescription.value;
@@ -207,7 +208,7 @@ buttonNewList?.addEventListener('click', () => {
 // Edit Button
 taskContainer?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('edit-todo')) {
-		editIndex = e.target.dataset.index;
+		editIndex = e.target.closest('.task-card').dataset.index;
 		editToggle = true;
 		modal?.classList.toggle('closed');
 		modalOverlay?.classList.toggle('closed');
