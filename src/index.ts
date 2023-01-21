@@ -21,6 +21,7 @@ const formPriority = document.querySelector(
 const taskCard = document.querySelectorAll('.task-card');
 const buttonEdit = document.querySelectorAll('.edit-todo');
 const buttonNewList = document.querySelector('.new-list');
+const form = document.querySelector('.modal-form') as HTMLFormElement;
 
 const mainList = (function () {
 	const list: any[] = [];
@@ -98,8 +99,12 @@ const domHandler = (function () {
 				<div class="task-card" data-index=${i}>
 					<h1>${e.title}</h1>
 					<h1>${e.description}</h1>
-					<h1>${format(e.date, 'MMM do')}</h1>
-					<h1 contentEditable="true">${e.priority}</h1>
+					<h1>${
+						e.date.getTime() != new Date(0).getTime()
+							? format(e.date, 'MMM do')
+							: ''
+					}</h1>
+					<h1>${e.priority}</h1>
 					<button class="delete-todo">Delete</button>
 					<button class="edit-todo">Edit</button>
 				</div>
@@ -145,26 +150,38 @@ buttonExit?.addEventListener('click', () => {
 // TODO: allow it to be entered with enter
 // TODO: make it more enmeshed with form
 // TODO: wipe out on new addition
-// BUG:  editing only works on the first task
 buttonSumbit?.addEventListener('click', () => {
 	let todo = mainList.list.at(listIndex).list.at(editIndex);
 	// Submit button edits the current todo
 	if (editToggle) {
 		todo.title = formTitle.value;
 		todo.description = formDescription.value;
-		todo.date = formDate.valueAsDate;
+		todo.date =
+			formDate.valueAsDate !== null ? formDate.valueAsDate : new Date(0);
 		todo.priority = formPriority.value;
+
+		console.log(formDate.valueAsDate);
+		form?.reset();
 	} else {
+		// Add todo to current list
+		// console.log(new Date(0));
+		// Protect a/g form being sent if
+		// console.log(typeof wformDescription.value);
 		mainList.list.at(listIndex).addTodo({
 			title: formTitle.value,
 			description: formDescription.value,
-			date: formDate.valueAsDate,
+			date: formDate.value !== '' ? formDate.valueAsDate : new Date(0),
 			priority: formPriority.value,
 		});
+		// if (formDate.valueAsDate === null) {
+		// 	todo.date = '';
+		// }
+		form?.reset();
 	}
+
 	editToggle = false;
 
-	console.log(mainList.list.at(listIndex).list.at(editIndex).title);
+	// console.log(mainList.list.at(listIndex).list.at(editIndex).title);
 	domHandler.taskCardsUpdate(listIndex);
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -212,6 +229,17 @@ taskContainer?.addEventListener('click', (e: any) => {
 		editToggle = true;
 		modal?.classList.toggle('closed');
 		modalOverlay?.classList.toggle('closed');
+
+		// Populate fields from current todo
+		let todo = mainList.list.at(listIndex).list.at(editIndex);
+
+		formTitle.value = todo.title;
+		formDescription.value = todo.description;
+		formDate.valueAsDate =
+			todo.date.getTime() !== new Date(0).getTime() ? todo.date : null;
+		formPriority.value = todo.priority;
+
+		// console.log(todo.date);
 	}
 });
 

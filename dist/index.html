@@ -20,10 +20,10 @@
 		<button class="add-new">+</button>
 		<div class="modal closed">
 			<button class="exit-modal">X</button>
-			<form action="" class="modal-form">
+			<form action="" class="modal-form" onsubmit="return false">
 				<div class="title-container">
 					<label for="title">Title</label>
-					<input class="form-title" id="title" type="text" required />
+					<input class="form-title" id="title" type="text" />
 				</div>
 				<input class="form-description" type="text" />
 				<input class="form-date" type="date" />
@@ -32,10 +32,8 @@
 					<option value="Soon">Soon</option>
 					<option value="Chillin'">Chillin'</option>
 				</select>
+				<button type="submit" class="submit-todo">Submit</button>
 			</form>
-			<button type="submit" form="modal-form" class="submit-todo">
-				Submit
-			</button>
 		</div>
 		<div class="modal-overlay closed"></div>
 	</body>
