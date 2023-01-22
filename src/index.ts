@@ -129,8 +129,11 @@ let editIndex: number;
 
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
-	listIndex = e.target?.dataset.index;
-	domHandler.taskCardsUpdate(listIndex);
+	if (e.target.classList.value.includes('task-bar-list')) {
+		listIndex = e.target?.dataset.index;
+		console.log(listIndex);
+		domHandler.taskCardsUpdate(listIndex);
+	}
 });
 
 // Open Modal
@@ -149,8 +152,6 @@ buttonExit?.addEventListener('click', () => {
 });
 
 // Submit
-// TODO: allow it to be entered with enter
-// TODO: wipe out on new addition
 buttonSumbit?.addEventListener('click', () => {
 	let todo = mainList.list.at(listIndex).list.at(editIndex);
 	// Submit button edits the current todo
@@ -211,6 +212,11 @@ domHandler.taskCardsUpdate(0);
 // Create new list
 // TODO create new list based on input name
 buttonNewList?.addEventListener('click', () => {
+	form?.reset();
+
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+
 	mainList.addList('pizza');
 	domHandler.taskBarUpdate();
 });
@@ -236,6 +242,7 @@ taskContainer?.addEventListener('click', (e: any) => {
 	}
 });
 
+// TODO: Confirmation
 // Delete current Todo
 taskContainer?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('delete-todo')) {
