@@ -136,6 +136,8 @@ taskBar?.addEventListener('click', (e: any) => {
 // Open Modal
 // TODO: create module
 buttonNew?.addEventListener('click', () => {
+	form?.reset();
+
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
@@ -148,7 +150,6 @@ buttonExit?.addEventListener('click', () => {
 
 // Submit
 // TODO: allow it to be entered with enter
-// TODO: make it more enmeshed with form
 // TODO: wipe out on new addition
 buttonSumbit?.addEventListener('click', () => {
 	let todo = mainList.list.at(listIndex).list.at(editIndex);
@@ -163,20 +164,12 @@ buttonSumbit?.addEventListener('click', () => {
 		console.log(formDate.valueAsDate);
 		form?.reset();
 	} else {
-		// Add todo to current list
-		// console.log(new Date(0));
-		// Protect a/g form being sent if
-		// console.log(typeof wformDescription.value);
 		mainList.list.at(listIndex).addTodo({
 			title: formTitle.value,
 			description: formDescription.value,
 			date: formDate.value !== '' ? formDate.valueAsDate : new Date(0),
 			priority: formPriority.value,
 		});
-		// if (formDate.valueAsDate === null) {
-		// 	todo.date = '';
-		// }
-		form?.reset();
 	}
 
 	editToggle = false;
