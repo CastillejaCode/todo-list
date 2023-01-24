@@ -1,6 +1,7 @@
 import './style.scss';
 import format from 'date-fns/format';
-import { quartersInYear } from 'date-fns';
+import parseISO from 'date-fns/parseISO';
+import { parse, quartersInYear } from 'date-fns';
 
 const buttonsList = document.querySelectorAll('.button-header');
 const buttonListDelete = document.querySelector('.list-delete');
@@ -62,6 +63,10 @@ const mainList = (function () {
 	const addList = (name: string) => {
 		list.push(lists(name));
 	};
+
+	// const addTodoToList = (name: string) => {
+	// 	list.push(lists(name));
+	// };
 
 	const removeList = (index: number) => {
 		list.splice(index, 1);
@@ -159,8 +164,8 @@ const domHandler = (function () {
 	};
 })();
 
-mainList.addList('default');
-mainList.addList('pizza');
+// mainList.addList('default');
+// mainList.addList('pizza');
 
 let listIndex: number;
 let todoIndex: any;
@@ -168,11 +173,43 @@ let editToggle: boolean;
 let editIndex: number;
 let todoDeleteToggle: boolean;
 
-// taskBar?.addEventListener('click', (e: any) => {
-// 	if (e.target.classList.value.includes('task-bar-list')) {
-// 	}
-// });
+function populateStorage() {
+	let lists = mainList.list;
+	localStorage.setItem('lists', JSON.stringify(lists));
+}
 
+function setStyles() {
+	let allLists = localStorage.getItem('lists');
+	let i = 0;
+
+	if (typeof allLists === 'string') {
+		let lists = JSON.parse(allLists);
+		// console.log(lists[2].list);
+		// console.log(list);
+
+		for (let list of lists) {
+			mainList.addList(list.name);
+			console.log(list.list);
+		}
+
+		for (let list of mainList.list) {
+			// console.log(list);
+			for (let todo of lists[i].list) {
+				todo.date = parseISO(todo.date);
+				list.addTodo(todo);
+			}
+			i++;
+		}
+
+		// console.log(mainList);
+		// console.log(lists.length);
+
+		// for (let todo of )
+	}
+	domHandler.taskBarUpdate();
+}
+setStyles();
+console.log(mainList);
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('task-bar-list')) {
@@ -213,6 +250,7 @@ listModalEditForm.addEventListener('submit', (e: any) => {
 	// Edited list is selected after name change
 	let currentList = document.querySelector(`[data-index='${listIndex}']`);
 	currentList?.classList.add('selected');
+	populateStorage();
 
 	listModalEdit?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -232,16 +270,21 @@ buttonDelete?.addEventListener('click', () => {
 
 // Delete the list
 buttonConfirm?.addEventListener('click', () => {
+	// Deletes the todo
 	if (todoDeleteToggle) {
 		todoIndex.closest('.task-card').remove();
 		mainList.list.at(listIndex).removeTodo(todoIndex.dataset.index);
 		todoDeleteToggle != todoDeleteToggle;
-	} else {
+	}
+	// Deletes the list
+	else {
 		mainList.removeList(listIndex);
 		domHandler.clearTaskCards();
 		domHandler.taskBarUpdate();
+		populateStorage();
 	}
 
+	populateStorage();
 	deleteModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
@@ -268,6 +311,8 @@ listModalForm?.addEventListener('submit', (e: any) => {
 
 	// Remove edit lists
 	buttonsList.forEach((e) => e.classList.add('closed'));
+
+	populateStorage();
 });
 
 // Add new todo form
@@ -311,6 +356,8 @@ form?.addEventListener('submit', () => {
 		});
 	}
 
+	console.log(mainList);
+	populateStorage();
 	editToggle = false;
 
 	// console.log(mainList.list.at(listIndex).list.at(editIndex).title);
@@ -319,23 +366,23 @@ form?.addEventListener('submit', () => {
 	modalOverlay?.classList.toggle('closed');
 });
 
-mainList.list.at(1)?.addTodo({
-	title: 'Eat Pizza',
-	description: 'Pet the cat a lot',
-	date: new Date(),
-	priority: 'urgent',
-});
+// mainList.list.at(1)?.addTodo({
+// 	title: 'Eat Pizza',
+// 	description: 'Pet the cat a lot',
+// 	date: new Date(),
+// 	priority: 'urgent',
+// });
 
-mainList.list.at(0)?.addTodo({
-	title: 'Pet Cat',
-	description: 'Pet the cat a lot',
-	date: new Date(),
-	priority: 'urgent',
-});
+// mainList.list.at(0)?.addTodo({
+// 	title: 'Pet Cat',
+// 	description: 'Pet the cat a lot',
+// 	date: new Date(),
+// 	priority: 'urgent',
+// });
 
 // Show all lists and default todos
-domHandler.taskBarUpdate();
-domHandler.taskCardsUpdate(0);
+// domHandler.taskBarUpdate();
+// domHandler.taskCardsUpdate(0);
 
 // Edit Button
 taskContainer?.addEventListener('click', (e: any) => {
@@ -358,7 +405,6 @@ taskContainer?.addEventListener('click', (e: any) => {
 	}
 });
 
-// TODO: Confirmation
 // Delete Modal
 taskContainer?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('delete-todo')) {
