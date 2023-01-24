@@ -1,7 +1,11 @@
 import './style.scss';
 import format from 'date-fns/format';
+import add from 'date-fns/add';
+
 import parseISO from 'date-fns/parseISO';
-import { parse, quartersInYear } from 'date-fns';
+import sub from 'date-fns/sub';
+
+import { parse, parseJSON, quartersInYear } from 'date-fns';
 
 const buttonsList = document.querySelectorAll('.button-header');
 const buttonListDelete = document.querySelector('.list-delete');
@@ -140,11 +144,14 @@ const domHandler = (function () {
 				'beforeend',
 				`
 				<div class="task-card" data-index=${i}>
+					<input type="checkbox"/>
 					<h1>${e.title}</h1>
 					<h1>${e.description}</h1>
 					<h1>${
+						// Checks if user does not put in date field
 						e.date.getTime() != new Date(0).getTime()
-							? format(e.date, 'MMM do')
+							? // Added b/c didn't have all dates set in UTC, so now have to workaround the lack of providng a timezone
+							  format(add(e.date, { hours: 8 }), 'MMM do')
 							: ''
 					}</h1>
 					<h1>${e.priority}</h1>
@@ -195,7 +202,7 @@ function setStyles() {
 		for (let list of mainList.list) {
 			// console.log(list);
 			for (let todo of lists[i].list) {
-				todo.date = parseISO(todo.date);
+				todo.date = parseJSON(todo.date);
 				list.addTodo(todo);
 			}
 			i++;
@@ -334,7 +341,7 @@ buttonExit?.forEach((e) =>
 	})
 );
 
-// Submit
+// Submit Todo
 form?.addEventListener('submit', () => {
 	let todo = mainList.list.at(listIndex).list.at(editIndex);
 	// Submit button edits the current todo
@@ -345,7 +352,6 @@ form?.addEventListener('submit', () => {
 			formDate.valueAsDate !== null ? formDate.valueAsDate : new Date(0);
 		todo.priority = formPriority.value;
 
-		console.log(formDate.valueAsDate);
 		form?.reset();
 	} else {
 		mainList.list.at(listIndex).addTodo({
