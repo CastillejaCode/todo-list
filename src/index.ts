@@ -45,10 +45,16 @@ const listModalEdit = document.querySelector('.list-modal-edit');
 const listModalEditForm = document.querySelector(
 	'.list-modal-edit-form'
 ) as HTMLFormElement;
-const buttonEditList = document.querySelector('.submit-list-edit');
+const buttonEditList = document.querySelector('.list-edit');
+const buttonDeleteList = document.querySelector('.list-delete');
 const formTitleListEdit = document.querySelector(
 	'.list-form-title-edit'
 ) as HTMLInputElement;
+
+// Delete Modal
+const deleteModal = document.querySelector('.delete-modal');
+const buttonDelete = document.querySelector('.button-delete');
+const buttonConfirm = document.querySelector('.button-confirm');
 
 const mainList = (function () {
 	const list: any[] = [];
@@ -57,9 +63,14 @@ const mainList = (function () {
 		list.push(lists(name));
 	};
 
+	const removeList = (index: number) => {
+		list.splice(index, 1);
+	};
+
 	return {
 		list,
 		addList,
+		removeList,
 	};
 })();
 
@@ -144,6 +155,7 @@ const domHandler = (function () {
 	return {
 		taskBarUpdate: updateTaskBar,
 		taskCardsUpdate: updateTaskCards,
+		clearTaskCards,
 	};
 })();
 
@@ -151,8 +163,10 @@ mainList.addList('default');
 mainList.addList('pizza');
 
 let listIndex: number;
+let todoIndex: any;
 let editToggle: boolean;
 let editIndex: number;
+let todoDeleteToggle: boolean;
 
 // taskBar?.addEventListener('click', (e: any) => {
 // 	if (e.target.classList.value.includes('task-bar-list')) {
@@ -201,6 +215,34 @@ listModalEditForm.addEventListener('submit', (e: any) => {
 	currentList?.classList.add('selected');
 
 	listModalEdit?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+// Open Delete Modal
+buttonDeleteList?.addEventListener('click', () => {
+	deleteModal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+// Don't delete
+buttonDelete?.addEventListener('click', () => {
+	deleteModal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+// Delete the list
+buttonConfirm?.addEventListener('click', () => {
+	if (todoDeleteToggle) {
+		todoIndex.closest('.task-card').remove();
+		mainList.list.at(listIndex).removeTodo(todoIndex.dataset.index);
+		todoDeleteToggle != todoDeleteToggle;
+	} else {
+		mainList.removeList(listIndex);
+		domHandler.clearTaskCards();
+		domHandler.taskBarUpdate();
+	}
+
+	deleteModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
 
@@ -317,11 +359,13 @@ taskContainer?.addEventListener('click', (e: any) => {
 });
 
 // TODO: Confirmation
-// Delete current Todo
+// Delete Modal
 taskContainer?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('delete-todo')) {
-		e.target.closest('.task-card').remove();
-		mainList.list.at(listIndex).removeTodo(e.target.dataset.index);
+		todoDeleteToggle = true;
+		todoIndex = e.target;
+		deleteModal?.classList.toggle('closed');
+		modalOverlay?.classList.toggle('closed');
 	}
 });
 
