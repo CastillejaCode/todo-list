@@ -1,5 +1,6 @@
 import './style.scss';
 import format from 'date-fns/format';
+import { quartersInYear } from 'date-fns';
 
 const taskBar = document.querySelector('.task-bar') as HTMLElement;
 const taskBarList = document.querySelectorAll('.task-bar-list');
@@ -22,6 +23,14 @@ const taskCard = document.querySelectorAll('.task-card');
 const buttonEdit = document.querySelectorAll('.edit-todo');
 const buttonNewList = document.querySelector('.new-list');
 const form = document.querySelector('.modal-form') as HTMLFormElement;
+
+// List Modal
+const listModal = document.querySelector('.list-modal');
+const listModalForm = document.querySelector('.list-modal-form');
+const buttonSubmitList = document.querySelector('.submit-list');
+const formTitleList = document.querySelector(
+	'.list-form-title'
+) as HTMLInputElement;
 
 const mainList = (function () {
 	const list: any[] = [];
@@ -127,6 +136,11 @@ let listIndex: number;
 let editToggle: boolean;
 let editIndex: number;
 
+taskBar?.addEventListener('click', (e: any) => {
+	if (e.target.classList.value.includes('task-bar-list')) {
+	}
+});
+
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('task-bar-list')) {
@@ -147,12 +161,13 @@ buttonNew?.addEventListener('click', () => {
 
 // Exit Modal
 buttonExit?.addEventListener('click', () => {
-	modal?.classList.toggle('closed');
+	// modal?.classList.toggle('closed');
+	listModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
 
 // Submit
-buttonSumbit?.addEventListener('click', () => {
+form?.addEventListener('submit', () => {
 	let todo = mainList.list.at(listIndex).list.at(editIndex);
 	// Submit button edits the current todo
 	if (editToggle) {
@@ -212,13 +227,17 @@ domHandler.taskCardsUpdate(0);
 // Create new list
 // TODO create new list based on input name
 buttonNewList?.addEventListener('click', () => {
-	form?.reset();
-
-	modal?.classList.toggle('closed');
+	listModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
+});
 
-	mainList.addList('pizza');
+// Add new list
+listModalForm?.addEventListener('submit', () => {
+	mainList.addList(formTitleList.value);
 	domHandler.taskBarUpdate();
+
+	listModal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
 });
 
 // Edit Button

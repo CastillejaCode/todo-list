@@ -23,11 +23,11 @@
 			<form action="" class="modal-form" onsubmit="return false">
 				<div class="title-container">
 					<label for="title">Title</label>
-					<input class="form-title" id="title" type="text" />
+					<input class="form-title" id="title" type="text" required />
 				</div>
 				<input class="form-description" type="text" />
 				<input class="form-date" type="date" />
-				<select name="priority" class="form-priority">
+				<select name="priority" class="form-priority" required>
 					<option value="Urgent">Urgent</option>
 					<option value="Soon">Soon</option>
 					<option value="Chillin'">Chillin'</option>
@@ -35,15 +35,15 @@
 				<button type="submit" class="submit-todo">Submit</button>
 			</form>
 		</div>
-		<div class="modal closed">
+		<div class="modal list-modal closed">
 			<button class="exit-modal">X</button>
-			<form action="" class="modal-form" onsubmit="return false">
-				<div class="title-container">
+			<form action="" class="list-modal-form" onsubmit="return false">
+				<div class="list-title-container">
 					<label for="title">Title</label>
-					<input class="form-title" id="title" type="text" />
+					<input class="list-form-title" type="text" required />
 				</div>
 
-				<button type="submit" class="submit-todo">Submit</button>
+				<button type="submit" class="submit-list">Submit</button>
 			</form>
 		</div>
 		<div class="modal-overlay closed"></div>
