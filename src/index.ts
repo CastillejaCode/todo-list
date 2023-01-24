@@ -162,17 +162,21 @@ let editIndex: number;
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('task-bar-list')) {
-		// buttonsList.forEach((e) => e.classList.add('closed'));
 		listIndex = e.target?.dataset.index;
-		console.log(listIndex);
 		domHandler.taskCardsUpdate(listIndex);
 	}
 });
 
-// Open list options
-taskBar.addEventListener('click', (e: any) => {
+// Select list and current list index
+taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('selected')) {
 		buttonsList.forEach((e) => e.classList.toggle('closed'));
+	}
+	if (e.target.classList.value.includes('task-bar-list')) {
+		document
+			.querySelectorAll('.task-bar-list')
+			.forEach((element) => element.classList.remove('selected'));
+		e.target.classList.add('selected');
 	}
 });
 
@@ -184,35 +188,43 @@ buttonListEdit?.addEventListener('click', () => {
 });
 
 // Edit current list
-listModalEditForm.addEventListener('submit', () => {
-	console.log(listIndex);
-	console.log();
+listModalEditForm.addEventListener('submit', (e: any) => {
 	mainList.list.at(listIndex).name = formTitleListEdit.value;
-
 	domHandler.taskBarUpdate();
+
+	// Edited list is selected after name change
+	let currentList = document.querySelector(`[data-index='${listIndex}']`);
+	currentList?.classList.add('selected');
 
 	listModalEdit?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
 
-// Create new list
-// TODO create new list based on input name
+// New List form
 buttonNewList?.addEventListener('click', () => {
 	listModalForm?.reset();
 	listModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
 
-// Add new list or edit current one
+// Add new list
 listModalForm?.addEventListener('submit', (e: any) => {
 	mainList.addList(formTitleList.value);
 	domHandler.taskBarUpdate();
 
+	// New list is selected
+	let lastChild = taskBar.lastElementChild;
+	taskBarList.forEach((e) => e.classList.remove('selected'));
+	lastChild?.classList.add('selected');
+
 	listModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
+
+	// Remove edit lists
+	buttonsList.forEach((e) => e.classList.add('closed'));
 });
 
-// Open Modal
+// Add new todo form
 // TODO: create module
 buttonNew?.addEventListener('click', () => {
 	form?.reset();
@@ -221,11 +233,10 @@ buttonNew?.addEventListener('click', () => {
 	modalOverlay?.classList.toggle('closed');
 });
 
-// Exit Modal
+// Exit Modal for all forms
 buttonExit?.forEach((e) =>
 	e.addEventListener('click', () => {
 		modal?.classList.add('closed');
-		console.log(123);
 		listModal?.classList.add('closed');
 		listModalEdit?.classList.add('closed');
 		modalOverlay?.classList.add('closed');
@@ -260,16 +271,6 @@ form?.addEventListener('submit', () => {
 	domHandler.taskCardsUpdate(listIndex);
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
-});
-
-// Select list and current list index
-taskBar?.addEventListener('click', (e: any) => {
-	if (e.target.classList.value.includes('task-bar-list')) {
-		document
-			.querySelectorAll('.task-bar-list')
-			.forEach((element) => element.classList.remove('selected'));
-		e.target.classList.toggle('selected');
-	}
 });
 
 mainList.list.at(1)?.addTodo({
