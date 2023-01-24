@@ -172,11 +172,15 @@ taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('selected')) {
 		buttonsList.forEach((e) => e.classList.toggle('closed'));
 	}
-	if (e.target.classList.value.includes('task-bar-list')) {
+	if (
+		e.target.classList.value.includes('task-bar-list') &&
+		!e.target.classList.value.includes('selected')
+	) {
 		document
 			.querySelectorAll('.task-bar-list')
 			.forEach((element) => element.classList.remove('selected'));
 		e.target.classList.add('selected');
+		buttonsList.forEach((e) => e.classList.add('closed'));
 	}
 });
 
