@@ -1,11 +1,7 @@
 import './style.scss';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
-
-import parseISO from 'date-fns/parseISO';
-import sub from 'date-fns/sub';
-
-import { parse, parseJSON, quartersInYear } from 'date-fns';
+import parseJSON from 'date-fns/parseJSON';
 
 const buttonsList = document.querySelectorAll('.button-header');
 const buttonListDelete = document.querySelector('.list-delete');
@@ -67,10 +63,6 @@ const mainList = (function () {
 	const addList = (name: string) => {
 		list.push(lists(name));
 	};
-
-	// const addTodoToList = (name: string) => {
-	// 	list.push(lists(name));
-	// };
 
 	const removeList = (index: number) => {
 		list.splice(index, 1);
@@ -215,8 +207,12 @@ function setStyles() {
 	}
 	domHandler.taskBarUpdate();
 }
+
+//Initialize stored information
 setStyles();
-console.log(mainList);
+document.querySelector('.task-bar-list')?.classList.add('selected');
+domHandler.taskCardsUpdate(0);
+
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('task-bar-list')) {
