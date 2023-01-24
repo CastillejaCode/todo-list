@@ -2,12 +2,18 @@ import './style.scss';
 import format from 'date-fns/format';
 import { quartersInYear } from 'date-fns';
 
+const buttonsList = document.querySelectorAll('.button-header');
+const buttonListDelete = document.querySelector('.list-delete');
+const buttonListEdit = document.querySelector('.list-edit');
+
 const taskBar = document.querySelector('.task-bar') as HTMLElement;
 const taskBarList = document.querySelectorAll('.task-bar-list');
+
 const buttonNew = document.querySelector('.add-new');
 const buttonSumbit = document.querySelector('.submit-todo');
-const buttonExit = document.querySelector('.exit-modal');
+const buttonExit = document.querySelectorAll('.exit-modal');
 const buttonDeleteTodo = document.querySelector('.delete-todo');
+
 const taskContainer = document.querySelector('.task-container');
 const modal = document.querySelector('.modal');
 const modalOverlay = document.querySelector('.modal-overlay');
@@ -26,10 +32,22 @@ const form = document.querySelector('.modal-form') as HTMLFormElement;
 
 // List Modal
 const listModal = document.querySelector('.list-modal');
-const listModalForm = document.querySelector('.list-modal-form');
+const listModalForm = document.querySelector(
+	'.list-modal-form'
+) as HTMLFormElement;
 const buttonSubmitList = document.querySelector('.submit-list');
 const formTitleList = document.querySelector(
 	'.list-form-title'
+) as HTMLInputElement;
+
+// Edit List Mdodal
+const listModalEdit = document.querySelector('.list-modal-edit');
+const listModalEditForm = document.querySelector(
+	'.list-modal-edit-form'
+) as HTMLFormElement;
+const buttonEditList = document.querySelector('.submit-list-edit');
+const formTitleListEdit = document.querySelector(
+	'.list-form-title-edit'
 ) as HTMLInputElement;
 
 const mainList = (function () {
@@ -136,18 +154,62 @@ let listIndex: number;
 let editToggle: boolean;
 let editIndex: number;
 
-taskBar?.addEventListener('click', (e: any) => {
-	if (e.target.classList.value.includes('task-bar-list')) {
-	}
-});
+// taskBar?.addEventListener('click', (e: any) => {
+// 	if (e.target.classList.value.includes('task-bar-list')) {
+// 	}
+// });
 
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('task-bar-list')) {
+		// buttonsList.forEach((e) => e.classList.add('closed'));
 		listIndex = e.target?.dataset.index;
 		console.log(listIndex);
 		domHandler.taskCardsUpdate(listIndex);
 	}
+});
+
+// Open list options
+taskBar.addEventListener('click', (e: any) => {
+	if (e.target.classList.value.includes('selected')) {
+		buttonsList.forEach((e) => e.classList.toggle('closed'));
+	}
+});
+
+// Open edit modal
+buttonListEdit?.addEventListener('click', () => {
+	listModalEditForm?.reset();
+	listModalEdit?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+// Edit current list
+listModalEditForm.addEventListener('submit', () => {
+	console.log(listIndex);
+	console.log();
+	mainList.list.at(listIndex).name = formTitleListEdit.value;
+
+	domHandler.taskBarUpdate();
+
+	listModalEdit?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+// Create new list
+// TODO create new list based on input name
+buttonNewList?.addEventListener('click', () => {
+	listModalForm?.reset();
+	listModal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+});
+
+// Add new list or edit current one
+listModalForm?.addEventListener('submit', (e: any) => {
+	mainList.addList(formTitleList.value);
+	domHandler.taskBarUpdate();
+
+	listModal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
 });
 
 // Open Modal
@@ -160,11 +222,15 @@ buttonNew?.addEventListener('click', () => {
 });
 
 // Exit Modal
-buttonExit?.addEventListener('click', () => {
-	// modal?.classList.toggle('closed');
-	listModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
-});
+buttonExit?.forEach((e) =>
+	e.addEventListener('click', () => {
+		modal?.classList.add('closed');
+		console.log(123);
+		listModal?.classList.add('closed');
+		listModalEdit?.classList.add('closed');
+		modalOverlay?.classList.add('closed');
+	})
+);
 
 // Submit
 form?.addEventListener('submit', () => {
@@ -223,22 +289,6 @@ mainList.list.at(0)?.addTodo({
 // Show all lists and default todos
 domHandler.taskBarUpdate();
 domHandler.taskCardsUpdate(0);
-
-// Create new list
-// TODO create new list based on input name
-buttonNewList?.addEventListener('click', () => {
-	listModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
-});
-
-// Add new list
-listModalForm?.addEventListener('submit', () => {
-	mainList.addList(formTitleList.value);
-	domHandler.taskBarUpdate();
-
-	listModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
-});
 
 // Edit Button
 taskContainer?.addEventListener('click', (e: any) => {

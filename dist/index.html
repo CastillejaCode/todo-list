@@ -8,7 +8,11 @@
 		<script defer src="main.js"></script>
 	</head>
 	<body>
-		<div class="header"><h1>Tue Due</h1></div>
+		<div class="header">
+			<button class="button-header list-edit closed">Edit</button>
+			<h1>Tue Due</h1>
+			<button class="button-header list-delete closed">Delete</button>
+		</div>
 		<div class="task-bar-container">
 			<div class="task-bar"></div>
 			<button class="new-list">New List</button>
@@ -44,6 +48,17 @@
 				</div>
 
 				<button type="submit" class="submit-list">Submit</button>
+			</form>
+		</div>
+		<div class="modal list-modal-edit closed">
+			<button class="exit-modal">X</button>
+			<form action="" class="list-modal-edit-form" onsubmit="return false">
+				<div class="list-title-container">
+					<label for="title">Title</label>
+					<input class="list-form-title-edit" type="text" required />
+				</div>
+
+				<button type="submit" class="submit-list-edit">Submit</button>
 			</form>
 		</div>
 		<div class="modal-overlay closed"></div>
