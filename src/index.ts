@@ -4,53 +4,34 @@ import add from 'date-fns/add';
 import parseJSON from 'date-fns/parseJSON';
 
 const buttonsList = document.querySelectorAll('.button-header');
-const buttonListDelete = document.querySelector('.list-delete');
 const buttonListEdit = document.querySelector('.list-edit');
+const buttonNew = document.querySelector('.add-new');
+const buttonExit = document.querySelectorAll('.exit-modal');
+const buttonNewList = document.querySelector('.new-list');
 
 const taskBar = document.querySelector('.task-bar') as HTMLElement;
 const taskBarList = document.querySelectorAll('.task-bar-list');
-
-const buttonNew = document.querySelector('.add-new');
-const buttonSumbit = document.querySelector('.submit-todo');
-const buttonExit = document.querySelectorAll('.exit-modal');
-const buttonDeleteTodo = document.querySelector('.delete-todo');
-
 const taskContainer = document.querySelector('.task-container');
+
+// Adding new todos
 const modal = document.querySelector('.modal');
 const modalOverlay = document.querySelector('.modal-overlay');
 const formTitle = document.querySelector('.form-title') as HTMLInputElement;
-const formDescription = document.querySelector(
-	'.form-description'
-) as HTMLInputElement;
+const formDescription = document.querySelector('.form-description') as HTMLInputElement;
 const formDate = document.querySelector('.form-date') as HTMLInputElement;
-const formPriority = document.querySelector(
-	'.form-priority'
-) as HTMLSelectElement;
-const taskCard = document.querySelectorAll('.task-card');
-const buttonEdit = document.querySelectorAll('.edit-todo');
-const buttonNewList = document.querySelector('.new-list');
+const formPriority = document.querySelector('.form-priority') as HTMLSelectElement;
 const form = document.querySelector('.modal-form') as HTMLFormElement;
 
-// List Modal
+// List form modal
 const listModal = document.querySelector('.list-modal');
-const listModalForm = document.querySelector(
-	'.list-modal-form'
-) as HTMLFormElement;
-const buttonSubmitList = document.querySelector('.submit-list');
-const formTitleList = document.querySelector(
-	'.list-form-title'
-) as HTMLInputElement;
+const listModalForm = document.querySelector('.list-modal-form') as HTMLFormElement;
+const formTitleList = document.querySelector('.list-form-title') as HTMLInputElement;
 
-// Edit List Mdodal
+// Edit/ Delete options for list
 const listModalEdit = document.querySelector('.list-modal-edit');
-const listModalEditForm = document.querySelector(
-	'.list-modal-edit-form'
-) as HTMLFormElement;
-const buttonEditList = document.querySelector('.list-edit');
+const listModalEditForm = document.querySelector('.list-modal-edit-form') as HTMLFormElement;
 const buttonDeleteList = document.querySelector('.list-delete');
-const formTitleListEdit = document.querySelector(
-	'.list-form-title-edit'
-) as HTMLInputElement;
+const formTitleListEdit = document.querySelector('.list-form-title-edit') as HTMLInputElement;
 
 // Delete Modal
 const deleteModal = document.querySelector('.delete-modal');
@@ -157,8 +138,8 @@ const domHandler = (function () {
 	};
 
 	return {
-		taskBarUpdate: updateTaskBar,
-		taskCardsUpdate: updateTaskCards,
+		updateTaskBar,
+		updateTaskCards: updateTaskCards,
 		clearTaskCards,
 	};
 })();
@@ -190,7 +171,7 @@ function setStyles() {
 
 		for (let list of lists) {
 			mainList.addList(list.name);
-			console.log(list.list);
+			// console.log(list.list);
 		}
 
 		for (let list of mainList.list) {
@@ -203,21 +184,24 @@ function setStyles() {
 		}
 	}
 
-	domHandler.taskBarUpdate();
+	domHandler.updateTaskBar();
 }
 
 //Initialize stored information
+
 setStyles();
-let intialListIndex = localStorage.getItem('listIndex');
+// console.log(localStorage.getItem('lists')?.length);
 
-if (typeof intialListIndex == 'string') {
-	listIndex = Number(intialListIndex.split('"').join(''));
+if (localStorage.getItem('lists')) {
+	let intialListIndex = localStorage.getItem('listIndex');
 
-	document
-		.querySelector(`[data-index='${listIndex}']`)
-		?.classList.add('selected');
-	console.log(document.querySelector(`[data-index='${listIndex}']`));
-	domHandler.taskCardsUpdate(listIndex);
+	if (typeof intialListIndex == 'string') {
+		listIndex = Number(intialListIndex.split('"').join(''));
+
+		document.querySelector(`[data-index='${listIndex}']`)?.classList.add('selected');
+		// console.log(document.querySelector(`[data-index='${listIndex}']`));
+		domHandler.updateTaskCards(listIndex);
+	}
 }
 
 // console.log(localStorage.)
@@ -226,7 +210,7 @@ if (typeof intialListIndex == 'string') {
 taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('task-bar-list')) {
 		listIndex = e.target?.dataset.index;
-		domHandler.taskCardsUpdate(listIndex);
+		domHandler.updateTaskCards(listIndex);
 
 		populateStorage();
 	}
@@ -237,13 +221,8 @@ taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('selected')) {
 		buttonsList.forEach((e) => e.classList.toggle('closed'));
 	}
-	if (
-		e.target.classList.value.includes('task-bar-list') &&
-		!e.target.classList.value.includes('selected')
-	) {
-		document
-			.querySelectorAll('.task-bar-list')
-			.forEach((element) => element.classList.remove('selected'));
+	if (e.target.classList.value.includes('task-bar-list') && !e.target.classList.value.includes('selected')) {
+		document.querySelectorAll('.task-bar-list').forEach((element) => element.classList.remove('selected'));
 		e.target.classList.add('selected');
 		buttonsList.forEach((e) => e.classList.add('closed'));
 	}
@@ -259,7 +238,7 @@ buttonListEdit?.addEventListener('click', () => {
 // Edit current list
 listModalEditForm.addEventListener('submit', (e: any) => {
 	mainList.list.at(listIndex).name = formTitleListEdit.value;
-	domHandler.taskBarUpdate();
+	domHandler.updateTaskBar();
 
 	// Edited list is selected after name change
 	let currentList = document.querySelector(`[data-index='${listIndex}']`);
@@ -294,7 +273,7 @@ buttonConfirm?.addEventListener('click', () => {
 	else {
 		mainList.removeList(listIndex);
 		domHandler.clearTaskCards();
-		domHandler.taskBarUpdate();
+		domHandler.updateTaskBar();
 		populateStorage();
 	}
 
@@ -313,12 +292,16 @@ buttonNewList?.addEventListener('click', () => {
 // Add new list
 listModalForm?.addEventListener('submit', (e: any) => {
 	mainList.addList(formTitleList.value);
-	domHandler.taskBarUpdate();
+	domHandler.updateTaskBar();
 
 	// New list is selected
-	let lastChild = taskBar.lastElementChild;
+	let lastChild: any = taskBar.lastElementChild;
 	taskBarList.forEach((e) => e.classList.remove('selected'));
 	lastChild?.classList.add('selected');
+
+	// On new list creation, display new list todos
+	listIndex = Number(lastChild?.dataset.index);
+	domHandler.updateTaskCards(listIndex);
 
 	listModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
@@ -355,8 +338,7 @@ form?.addEventListener('submit', () => {
 	if (editToggle) {
 		todo.title = formTitle.value;
 		todo.description = formDescription.value;
-		todo.date =
-			formDate.valueAsDate !== null ? formDate.valueAsDate : new Date(0);
+		todo.date = formDate.valueAsDate !== null ? formDate.valueAsDate : new Date(0);
 		todo.priority = formPriority.value;
 
 		form?.reset();
@@ -374,7 +356,7 @@ form?.addEventListener('submit', () => {
 	editToggle = false;
 
 	// console.log(mainList.list.at(listIndex).list.at(editIndex).title);
-	domHandler.taskCardsUpdate(listIndex);
+	domHandler.updateTaskCards(listIndex);
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 });
@@ -410,8 +392,7 @@ taskContainer?.addEventListener('click', (e: any) => {
 
 		formTitle.value = todo.title;
 		formDescription.value = todo.description;
-		formDate.valueAsDate =
-			todo.date.getTime() !== new Date(0).getTime() ? todo.date : null;
+		formDate.valueAsDate = todo.date.getTime() !== new Date(0).getTime() ? todo.date : null;
 		formPriority.value = todo.priority;
 
 		// console.log(todo.date);
