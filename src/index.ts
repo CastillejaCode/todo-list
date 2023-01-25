@@ -175,10 +175,12 @@ let todoDeleteToggle: boolean;
 function populateStorage() {
 	let lists = mainList.list;
 	localStorage.setItem('lists', JSON.stringify(lists));
+	localStorage.setItem('listIndex', JSON.stringify(listIndex));
 }
 
 function setStyles() {
 	let allLists = localStorage.getItem('lists');
+
 	let i = 0;
 
 	if (typeof allLists === 'string') {
@@ -199,25 +201,34 @@ function setStyles() {
 			}
 			i++;
 		}
-
-		// console.log(mainList);
-		// console.log(lists.length);
-
-		// for (let todo of )
 	}
+
 	domHandler.taskBarUpdate();
 }
 
 //Initialize stored information
 setStyles();
-document.querySelector('.task-bar-list')?.classList.add('selected');
-domHandler.taskCardsUpdate(0);
+let intialListIndex = localStorage.getItem('listIndex');
+
+if (typeof intialListIndex == 'string') {
+	listIndex = Number(intialListIndex.split('"').join(''));
+
+	document
+		.querySelector(`[data-index='${listIndex}']`)
+		?.classList.add('selected');
+	console.log(document.querySelector(`[data-index='${listIndex}']`));
+	domHandler.taskCardsUpdate(listIndex);
+}
+
+// console.log(localStorage.)
 
 // Switch b/t lists
 taskBar?.addEventListener('click', (e: any) => {
 	if (e.target.classList.value.includes('task-bar-list')) {
 		listIndex = e.target?.dataset.index;
 		domHandler.taskCardsUpdate(listIndex);
+
+		populateStorage();
 	}
 });
 
@@ -358,7 +369,7 @@ form?.addEventListener('submit', () => {
 		});
 	}
 
-	console.log(mainList);
+	// console.log(mainList);
 	populateStorage();
 	editToggle = false;
 
