@@ -327,15 +327,22 @@ listModalForm?.addEventListener('submit', (e: any) => {
 	populateStorage();
 });
 
-// DOM for todos//
+// DOM for todos////////////////////////////////////////////////////////////////////////////////
 
 // Add new todo form
 // TODO: create module
 buttonNew?.addEventListener('click', () => {
 	form?.reset();
-
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
+});
+
+document.addEventListener('keydown', (e: any) => {
+	if (e.key === 'Enter' && modalOverlay?.classList.value.includes('closed')) {
+		form?.reset();
+		modal?.classList.toggle('closed');
+		modalOverlay?.classList.toggle('closed');
+	}
 });
 
 // Exit button for all forms that have the option
@@ -419,7 +426,6 @@ taskContainer?.addEventListener('click', (e: any) => {
 			editIndex = e.target.closest('.task-card').dataset.index;
 			let todo = mainList.list.at(listIndex).list.at(editIndex);
 
-			console.log(todo.title);
 			mainList.list.at(listIndex).addCheckedTodo({
 				title: todo.title,
 				description: todo.description,
@@ -455,10 +461,13 @@ taskContainer?.addEventListener('click', (e: any) => {
 
 // Expand Card
 taskContainer?.addEventListener('click', (e: any) => {
-	console.log(e.target.nodeName);
 	if (e.target.closest('.task-card') && e.target.nodeName !== 'I' && e.target.nodeName !== 'INPUT') {
-		console.log(123);
-		e.target.closest('.task-card').classList.toggle('expand');
+		if (e.target.closest('.task-card').classList.value.includes('expand')) {
+			e.target.closest('.task-card').classList.toggle('expand');
+		} else {
+			document.querySelectorAll('.task-card:not(expand)').forEach((ele) => ele.classList.remove('expand'));
+			e.target.closest('.task-card').classList.add('expand');
+		}
 	}
 });
 

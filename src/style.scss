@@ -483,16 +483,25 @@ button {
 
 .task-bar {
 	height: fit-content;
-
 	display: flex;
 	gap: 1rem;
+
+	@media (max-width: 500px) {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+	}
 	cursor: pointer;
+}
+
+.task-bar-list {
+	font-weight: 300;
 }
 
 .selected {
 	color: $grey900;
+	font-weight: 600;
 	transform: translateY(-0.5rem);
-	border-top: 2px solid $grey900;
+	// border-top: 2px solid $grey900;
 }
 
 .task-container {
@@ -526,6 +535,8 @@ button {
 	background-color: $grey_50;
 	border-radius: 10px;
 	border: 2px solid $grey900;
+	border-top: 2px solid $grey600;
+	box-shadow: 0 1px 1px $grey400;
 
 	transition: all 0.3s;
 
