@@ -8,7 +8,6 @@ const buttonListEdit = document.querySelector('.list-edit');
 const buttonNew = document.querySelector('.add-new');
 const buttonExit = document.querySelectorAll('.exit-modal');
 const buttonNewList = document.querySelector('.new-list');
-const checkbox = document.querySelector('.checkbox');
 
 const taskBar = document.querySelector('.task-bar') as HTMLElement;
 const taskBarList = document.querySelectorAll('.task-bar-list');
@@ -73,12 +72,11 @@ const lists = function (nameList: string) {
 
 	const addTodo = (e: Todo) => list.push(e);
 
-	const addCheckedToList = () => {
-		checkedList.forEach((e) => {
-			addTodo(e);
-			checkedList.splice(checkedList.indexOf(e), 1);
-		});
-	};
+	// const addCheckedToList = (index: number) => {
+	// 	addTodo(checkedList[index]);
+	// 	checkedList.splice(index, 1);
+	// };
+
 	const addCheckedTodo = (e: Todo) => checkedList.push(e);
 
 	const removeTodo = (index: number) => list.splice(index, 1);
@@ -86,7 +84,7 @@ const lists = function (nameList: string) {
 	return {
 		list,
 		checkedList,
-		addCheckedToList,
+		// addCheckedToList,
 		addCheckedTodo,
 		name,
 		addTodo,
@@ -125,9 +123,10 @@ const domHandler = (function () {
 				'beforeend',
 				`
 				<div class="task-card" data-index=${i}>
+				
 					<input class="checkbox" type="checkbox"/>
+					<div class="card-info">
 					<h1>${e.title}</h1>
-					<h1>${e.description}</h1>
 					<h1>${
 						// Checks if user does not put in date field
 						e.date.getTime() != new Date(0).getTime()
@@ -135,9 +134,14 @@ const domHandler = (function () {
 							  format(add(e.date, { hours: 8 }), 'MMM do')
 							: ''
 					}</h1>
+				
+					<h1>${e.description}</h1>
 					<h1>${e.priority}</h1>
-					<button class="delete-todo">Delete</button>
-					<button class="edit-todo">Edit</button>
+					</div>
+					<div class="buttons-container">
+					<button class="delete-todo"><i class="fa-regular fa-pen-to-square edit-todo"></i></button>
+					<button class="edit-todo"><i class="fa-solid fa-trash delete-todo"></i></button>
+					</div>
 				</div>
 				`
 			);
@@ -429,7 +433,6 @@ taskContainer?.addEventListener('click', (e: any) => {
 					e.target.closest('.task-card').remove();
 
 					let i = 0;
-					console.log(mainList.list.at(listIndex).checkedList);
 
 					mainList.list.at(listIndex).checkedList.forEach((e: Todo) => {
 						taskContainer?.insertAdjacentHTML(
@@ -449,3 +452,19 @@ taskContainer?.addEventListener('click', (e: any) => {
 		// populateStorage()
 	}
 });
+
+// Expand Card
+taskContainer?.addEventListener('click', (e: any) => {
+	console.log(e.target.nodeName);
+	if (e.target.closest('.task-card') && e.target.nodeName !== 'I' && e.target.nodeName !== 'INPUT') {
+		console.log(123);
+		e.target.closest('.task-card').classList.toggle('expand');
+	}
+});
+
+// // Undo button
+// taskContainer?.addEventListener('click', (e: any) => {
+// 	if (e.target.classList.includes('undo')) {
+// 		mainList.list.at(listIndex).addCheckedToList();
+// 	}
+// });
