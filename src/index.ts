@@ -335,6 +335,7 @@ buttonNew?.addEventListener('click', () => {
 	form?.reset();
 	modal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
+	formTitle.focus();
 });
 
 document.addEventListener('keydown', (e: any) => {
@@ -358,7 +359,7 @@ buttonExit?.forEach((e) =>
 // Submit Todo
 form?.addEventListener('submit', () => {
 	let todo = mainList.list.at(listIndex).list.at(editIndex);
-
+	formTitle.focus();
 	// Submit button edits the current todo
 	if (editToggle) {
 		todo.title = formTitle.value;
@@ -405,6 +406,8 @@ taskContainer?.addEventListener('click', (e: any) => {
 
 		modal?.classList.toggle('closed');
 		modalOverlay?.classList.toggle('closed');
+
+		formTitle.focus();
 	}
 });
 
@@ -462,9 +465,12 @@ taskContainer?.addEventListener('click', (e: any) => {
 // Expand Card
 taskContainer?.addEventListener('click', (e: any) => {
 	if (e.target.closest('.task-card') && e.target.nodeName !== 'I' && e.target.nodeName !== 'INPUT') {
+		// If todo is already expanded, then only toggle
 		if (e.target.closest('.task-card').classList.value.includes('expand')) {
 			e.target.closest('.task-card').classList.toggle('expand');
-		} else {
+		}
+		// If switching to another todo, then deselect all other todos
+		else {
 			document.querySelectorAll('.task-card:not(expand)').forEach((ele) => ele.classList.remove('expand'));
 			e.target.closest('.task-card').classList.add('expand');
 		}
@@ -477,3 +483,6 @@ taskContainer?.addEventListener('click', (e: any) => {
 // 		mainList.list.at(listIndex).addCheckedToList();
 // 	}
 // });
+
+// TODO: auto focus on form
+// BUG: Sometimes deleting a list doesn't work???

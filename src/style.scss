@@ -440,7 +440,7 @@ button {
 
 	.list-edit {
 		position: relative;
-		right: 4px;
+		right: 2px;
 	}
 	button {
 		height: fit-content;
@@ -489,6 +489,8 @@ button {
 	@media (max-width: 500px) {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
+		place-content: center;
+		text-align: center;
 	}
 	cursor: pointer;
 }
@@ -500,8 +502,8 @@ button {
 .selected {
 	color: $grey900;
 	font-weight: 600;
+	// text-shadow: 0 0 1px $grey900;
 	transform: translateY(-0.5rem);
-	// border-top: 2px solid $grey900;
 }
 
 .task-container {
@@ -559,7 +561,7 @@ button {
 		margin-left: 2rem;
 		margin-top: -1.3rem;
 
-		:first-child() {
+		:first-child {
 			line-height: 2rem;
 		}
 		:nth-child(-n + 2) {
@@ -603,7 +605,7 @@ button {
 	color: $grey_50;
 	background-color: $blue600;
 
-	font-size: 4rem;
+	font-size: 3rem;
 	border-radius: 50%;
 
 	box-shadow: 0 2px 3px $grey400;
