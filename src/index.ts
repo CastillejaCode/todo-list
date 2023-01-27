@@ -122,7 +122,7 @@ const domHandler = (function () {
 			taskContainer?.insertAdjacentHTML(
 				'beforeend',
 				`
-				<div class="task-card" data-index=${i}>
+				<div class="task-card ${e.priority === 'Urgent' ? 'urgent' : ''}" data-index=${i}>
 				
 					<input class="checkbox" type="checkbox"/>
 					<div class="card-info">
@@ -139,8 +139,8 @@ const domHandler = (function () {
 					<h1>${e.priority}</h1>
 					</div>
 					<div class="buttons-container">
-					<button class="delete-todo"><i class="fa-regular fa-pen-to-square edit-todo"></i></button>
-					<button class="edit-todo"><i class="fa-solid fa-trash delete-todo"></i></button>
+					<button class="edit-todo"><i class="fa-regular fa-pen-to-square edit-todo"></i></button>
+					<button class="delete-todo"><i class="fa-solid fa-trash delete-todo"></i></button>
 					</div>
 				</div>
 				`
@@ -449,7 +449,7 @@ taskContainer?.addEventListener('click', (e: any) => {
 			}, 1000);
 		}
 
-		// populateStorage()
+		populateStorage();
 	}
 });
 
