@@ -171,10 +171,26 @@ let editIndex: number;
 // Delete modal shows for both lists and todos; determines if on a todo or list
 let todoDeleteToggle: boolean;
 
+// Info set to Local Storage
 function populateStorage() {
 	let lists = mainList.list;
 	localStorage.setItem('lists', JSON.stringify(lists));
 	localStorage.setItem('listIndex', JSON.stringify(listIndex));
+}
+
+// On reload returns list user was already on
+function rememberSelectedList() {
+	if (localStorage.getItem('lists')) {
+		let intialListIndex = localStorage.getItem('listIndex');
+
+		if (typeof intialListIndex === 'string') {
+			listIndex = Number(intialListIndex.split('"').join(''));
+
+			document.querySelector(`[data-index='${listIndex}']`)?.classList.add('selected');
+			// console.log(document.querySelector(`[data-index='${listIndex}']`));
+			domHandler.updateTaskCards(listIndex);
+		}
+	}
 }
 
 function setStyles() {
@@ -182,6 +198,7 @@ function setStyles() {
 
 	let i = 0;
 
+	// Loop to create lists then loop through local storage and populate lists w/ todos
 	if (typeof allLists === 'string') {
 		let lists = JSON.parse(allLists);
 
@@ -197,27 +214,15 @@ function setStyles() {
 			i++;
 		}
 	}
-
 	domHandler.updateTaskBar();
+
+	rememberSelectedList();
 }
 
-//Initialize stored information
+//Initialize info from localStorage
 setStyles();
 
-// Remembers last selected list
-if (localStorage.getItem('lists')) {
-	let intialListIndex = localStorage.getItem('listIndex');
-
-	if (typeof intialListIndex == 'string') {
-		listIndex = Number(intialListIndex.split('"').join(''));
-
-		document.querySelector(`[data-index='${listIndex}']`)?.classList.add('selected');
-		// console.log(document.querySelector(`[data-index='${listIndex}']`));
-		domHandler.updateTaskCards(listIndex);
-	}
-}
-
-// DOM for lists //
+// DOM for lists //////////////////////////////////////////////
 
 //TODO: Combine these functions
 // Switch b/t lists
@@ -232,9 +237,11 @@ taskBar?.addEventListener('click', (e: any) => {
 
 // Select list and current list index
 taskBar?.addEventListener('click', (e: any) => {
+	// Opens up edit/ delete for list when already selected
 	if (e.target.classList.value.includes('selected')) {
 		buttonsList.forEach((e) => e.classList.toggle('closed'));
 	}
+	// Deselects the edit/ delete options when switching to another list
 	if (e.target.classList.value.includes('task-bar-list') && !e.target.classList.value.includes('selected')) {
 		document.querySelectorAll('.task-bar-list').forEach((element) => element.classList.remove('selected'));
 		e.target.classList.add('selected');
@@ -242,11 +249,16 @@ taskBar?.addEventListener('click', (e: any) => {
 	}
 });
 
+function toggleTodoModal() {
+	listModalEdit?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+}
+
 // Open edit modal for lists
 buttonListEdit?.addEventListener('click', () => {
 	listModalEditForm?.reset();
-	listModalEdit?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+
+	toggleTodoModal();
 });
 
 // Edit current list
@@ -257,23 +269,24 @@ listModalEditForm.addEventListener('submit', (e: any) => {
 	// Edited list is selected after name change
 	let currentList = document.querySelector(`[data-index='${listIndex}']`);
 	currentList?.classList.add('selected');
-	populateStorage();
 
-	// OPTIMIZE: dry
-	listModalEdit?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	populateStorage();
+	toggleTodoModal();
 });
+
+function toggleDeleteModal() {
+	deleteModal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+}
 
 // Open Delete Modal
 buttonDeleteList?.addEventListener('click', () => {
-	deleteModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	toggleDeleteModal();
 });
 
 // On delete confirmation modal window, exits out
 buttonDelete?.addEventListener('click', () => {
-	deleteModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	toggleDeleteModal();
 });
 
 // Delete button for both lists and todos
@@ -282,6 +295,7 @@ buttonConfirm?.addEventListener('click', () => {
 	if (todoDeleteToggle) {
 		todoIndex.closest('.task-card').remove();
 		mainList.list.at(listIndex).removeTodo(todoIndex.dataset.index);
+		// Set the toggle for deleting off once action confirmed
 		todoDeleteToggle != todoDeleteToggle;
 	}
 	// Deletes the list
@@ -293,15 +307,17 @@ buttonConfirm?.addEventListener('click', () => {
 	}
 
 	populateStorage();
-	deleteModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	toggleDeleteModal();
 });
 
+function toggleListModal() {
+	listModal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+}
 // Bring up new list modal form
 buttonNewList?.addEventListener('click', () => {
 	listModalForm?.reset();
-	listModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	toggleListModal();
 });
 
 // Add new list button
@@ -318,8 +334,7 @@ listModalForm?.addEventListener('submit', (e: any) => {
 	listIndex = Number(lastChild?.dataset.index);
 	domHandler.updateTaskCards(listIndex);
 
-	listModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	toggleListModal();
 
 	// Remove option buttons for all lists
 	buttonsList.forEach((e) => e.classList.add('closed'));
@@ -330,19 +345,16 @@ listModalForm?.addEventListener('submit', (e: any) => {
 // DOM for todos////////////////////////////////////////////////////////////////////////////////
 
 // Add new todo form
-// TODO: create module
 buttonNew?.addEventListener('click', () => {
 	form?.reset();
-	modal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	toggleTodoModal();
 	formTitle.focus();
 });
 
 document.addEventListener('keydown', (e: any) => {
 	if (e.key === 'Enter' && modalOverlay?.classList.value.includes('closed')) {
 		form?.reset();
-		modal?.classList.toggle('closed');
-		modalOverlay?.classList.toggle('closed');
+		toggleTodoModal();
 	}
 });
 
@@ -385,8 +397,7 @@ form?.addEventListener('submit', () => {
 
 	domHandler.updateTaskCards(listIndex);
 
-	modal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
+	toggleTodoModal();
 });
 
 // Edit Button
@@ -404,8 +415,7 @@ taskContainer?.addEventListener('click', (e: any) => {
 		formDate.valueAsDate = todo.date.getTime() !== new Date(0).getTime() ? todo.date : null;
 		formPriority.value = todo.priority;
 
-		modal?.classList.toggle('closed');
-		modalOverlay?.classList.toggle('closed');
+		toggleTodoModal();
 
 		formTitle.focus();
 	}
@@ -417,8 +427,7 @@ taskContainer?.addEventListener('click', (e: any) => {
 		todoDeleteToggle = true;
 		todoIndex = e.target;
 
-		deleteModal?.classList.toggle('closed');
-		modalOverlay?.classList.toggle('closed');
+		toggleDeleteModal();
 	}
 });
 
@@ -484,5 +493,4 @@ taskContainer?.addEventListener('click', (e: any) => {
 // 	}
 // });
 
-// TODO: auto focus on form
 // BUG: Sometimes deleting a list doesn't work???
