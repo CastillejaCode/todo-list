@@ -204,8 +204,8 @@ taskBar?.addEventListener('click', (e: any) => {
 	}
 });
 
-function toggleTodoModal() {
-	listModalEdit?.classList.toggle('closed');
+function toggleListModal() {
+	listModal?.classList.toggle('closed');
 	modalOverlay?.classList.toggle('closed');
 }
 
@@ -213,7 +213,7 @@ function toggleTodoModal() {
 buttonListEdit?.addEventListener('click', () => {
 	listModalEditForm?.reset();
 
-	toggleTodoModal();
+	toggleListModal();
 });
 
 // Edit current list
@@ -226,7 +226,7 @@ listModalEditForm.addEventListener('submit', (e: any) => {
 	currentList?.classList.add('selected');
 
 	populateStorage();
-	toggleTodoModal();
+	toggleListModal();
 });
 
 function toggleDeleteModal() {
@@ -265,10 +265,6 @@ buttonConfirm?.addEventListener('click', () => {
 	toggleDeleteModal();
 });
 
-function toggleListModal() {
-	listModal?.classList.toggle('closed');
-	modalOverlay?.classList.toggle('closed');
-}
 // Bring up new list modal form
 buttonNewList?.addEventListener('click', () => {
 	listModalForm?.reset();
@@ -299,6 +295,10 @@ listModalForm?.addEventListener('submit', (e: any) => {
 
 // DOM for todos////////////////////////////////////////////////////////////////////////////////
 
+function toggleTodoModal() {
+	modal?.classList.toggle('closed');
+	modalOverlay?.classList.toggle('closed');
+}
 // Add new todo form
 buttonNew?.addEventListener('click', () => {
 	form?.reset();
@@ -306,6 +306,7 @@ buttonNew?.addEventListener('click', () => {
 	formTitle.focus();
 });
 
+// Add using enter
 document.addEventListener('keydown', (e: any) => {
 	if (e.key === 'Enter' && modalOverlay?.classList.value.includes('closed')) {
 		form?.reset();
