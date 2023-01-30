@@ -763,3 +763,90 @@ button {
 	background-color: hsl(50, 0%, 5%, 0.3);
 	backdrop-filter: blur(2px) grayscale(40%);
 }
+
+/////////////////////////////////////////////////////////////////////
+
+/**
+ * GitHub Corners, page css
+ * Author: Tim Holman
+ */
+
+.github-corner:hover .octo-arm {
+	animation: octocat-wave 560ms ease-in-out;
+}
+
+@keyframes octocat-wave {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	20% {
+		transform: rotate(-25deg);
+	}
+
+	40% {
+		transform: rotate(10deg);
+	}
+
+	60% {
+		transform: rotate(-25deg);
+	}
+
+	80% {
+		transform: rotate(10deg);
+	}
+
+	100% {
+		transform: rotate(0deg);
+	}
+}
+
+svg {
+	height: 96px;
+	width: 96px;
+}
+
+@media (max-width: 500px) {
+	.github-corner:hover .octo-arm {
+		animation: none;
+	}
+
+	.github-corner .octo-arm {
+		animation: octocat-wave 560ms ease-in-out;
+	}
+
+	svg {
+		height: 48px;
+		width: 48px;
+	}
+}
+
+.version {
+	margin-top: 25px;
+	height: 200px;
+	display: -webkit-flex;
+	display: flex;
+}
+
+.version-section {
+	padding: 10px;
+	height: 100%;
+}
+
+.version-section.dark {
+	background: #151513;
+}
+
+.demo {
+	position: fixed;
+	right: 0;
+	top: 0;
+	// position: relative;
+	width: 200px;
+	height: 5px;
+}
+
+.code {
+	vertical-align: top;
+	width: 336px;
+}
