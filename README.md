@@ -19,9 +19,20 @@ Todos have the fields: title, description, due date, priority. Title is required
 
 Click on a todo to expand it to see more info and options to edit or delete the todo.
 
+Checked todos will be greyed out, then erased on refresh or switching to another list.
+
 When a list is selected, select it again to see edit and delete options pop up next to the page title.
 
 Info is stored in local Storage. All user-inputted info will repopulate on refresh, along with the last selected list. 
+
+
+
+## What I would like to add in the future
+Ability to undo checked todos
+
+Reorder todos based on priority, due date, etc.,
+
+Add button to clear due date on edit form, otherwise it is a bit clunky to have to manually remove the dates
 
 # Acknowledgements
 
