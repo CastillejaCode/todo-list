@@ -8,7 +8,7 @@ const buttonsList = document.querySelectorAll('.button-header');
 const buttonListEdit = document.querySelector('.list-edit');
 const buttonNew = document.querySelector('.add-new');
 const buttonExit = document.querySelectorAll('.exit-modal');
-const buttonNewList = document.querySelector('.new-list');
+const buttonNewList = document.querySelectorAll('.new-list');
 
 const taskBar = document.querySelector('.task-bar') as HTMLElement;
 const taskBarList = document.querySelectorAll('.task-bar-list');
@@ -266,10 +266,12 @@ buttonConfirm?.addEventListener('click', () => {
 });
 
 // Bring up new list modal form
-buttonNewList?.addEventListener('click', () => {
-	listModalForm?.reset();
-	toggleListModal();
-});
+buttonNewList.forEach((e) =>
+	e.addEventListener('click', () => {
+		listModalForm?.reset();
+		toggleListModal();
+	})
+);
 
 // Add new list button
 listModalForm?.addEventListener('submit', (e: any) => {
