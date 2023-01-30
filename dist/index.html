@@ -4,11 +4,11 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>ToDo</title>
+		<title>Tue Due</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Genos:wght@400;500&family=Montserrat+Alternates:wght@400;500&family=Rubik&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Genos:wght@400;500&family=Montserrat+Alternates:wght@400;500&family=Poppins:wght@200;300;400;500;600&family=Rubik&display=swap"
 			rel="stylesheet"
 		/>
 		<script src="https://kit.fontawesome.com/3c56c7d658.js" crossorigin="anonymous"></script>
@@ -20,13 +20,15 @@
 			<h1>Tue Due</h1>
 			<button class="button-header list-delete closed"><i class="fa-solid fa-trash"></i></button>
 		</div>
+		<button class="new-list" id="new-list-mobile"><i class="fa-solid fa-plus fa-sm"></i></button>
 		<div class="task-bar-container">
 			<div class="task-bar"></div>
-			<button class="new-list"><i class="fa-solid fa-plus fa-sm"></i></button>
+			<button class="new-list" id="new-list-pc"><i class="fa-solid fa-plus fa-sm"></i></button>
 			<!-- <div class="task-bar-list">default</div> -->
 		</div>
 		<div class="task-container"></div>
 		<button class="add-new"><i class="fa-regular fa-plus fa-lg"></i></button>
+
 		<div class="modal closed">
 			<button class="exit-modal"><i class="fa-solid fa-x"></i></button>
 			<form action="" class="modal-form" onsubmit="return false">
