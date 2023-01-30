@@ -2,7 +2,7 @@
 
 A simple to do list
 
-# Learning Goals
+## Learning Goals
 
 * First time using Typescript
 * Webpack
@@ -12,7 +12,7 @@ A simple to do list
 * Mobile responsive
 * Better documentation
 
-# How to Use
+## How to Use
 Click on the upper plus button to add a new list. Then one can click on the lower right button, or hit ENTER, to add a new todo to the current list.
 
 Todos have the fields: title, description, due date, priority. Title is required, description and due date are optional.
@@ -34,7 +34,7 @@ Reorder todos based on priority, due date, etc.,
 
 Add button to clear due date on edit form, otherwise it is a bit clunky to have to manually remove the dates
 
-# Acknowledgements
+## Acknowledgements
 
 [Github Corners](https://github.com/tholman/github-corners)
 
@@ -44,5 +44,5 @@ Google Fonts
 
 Font Awesome
 
-# License
+## License
 [MIT](https://choosealicense.com/licenses/mit/)
